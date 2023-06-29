@@ -3,21 +3,21 @@ import Link from 'next/link';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { OAuthSignIn } from '@/components/oauth-signin';
-import { SignUpForm } from '@/components/signup-form';
+import { SignInForm } from '@/components/signin-form';
 import { Shell } from '@/components/shell';
 
 export const metadata: Metadata = {
-	title: 'Sign Up',
-	description: 'Sign up for an account',
+	title: 'Sign In',
+	description: 'Sign in to your account',
 };
 
-export default function SignUpPage() {
+export default function SignInPage() {
 	return (
 		<Shell layout="auth">
 			<Card>
 				<CardHeader className="space-y-1">
-					<CardTitle className="text-2xl">Registro</CardTitle>
-					<CardDescription>Escoge un método para hacer el registro</CardDescription>
+					<CardTitle className="text-2xl">Inicia sesión</CardTitle>
+					<CardDescription>Escoge tu método para iniciar sesión</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4">
 					<OAuthSignIn />
@@ -29,15 +29,18 @@ export default function SignUpPage() {
 							<span className="px-2 bg-background text-muted-foreground">O continua con</span>
 						</div>
 					</div>
-					<SignUpForm />
+					<SignInForm />
 				</CardContent>
-				<CardFooter className="grid gap-4">
-					<div className="text-sm text-muted-foreground">
-						¿Ya tienes una cuenta?{' '}
-						<Link aria-label="Iniciar sesión" href="/iniciar-sesion" className="transition-colors text-primary underline-offset-4 hover:underline">
-							Inicia sesión
+				<CardFooter className="flex flex-wrap items-center space-x-2">
+					<div className="flex-1 text-sm text-muted-foreground">
+						¿No tienes una cuenta?{' '}
+						<Link aria-label="Registro" href="/registro" className="transition-colors text-primary underline-offset-4 hover:underline">
+							Regístrate
 						</Link>
 					</div>
+					<Link aria-label="Reset password" href="/iniciar-sesion/recuperar-contrasena" className="text-sm transition-colors text-primary underline-offset-4 hover:underline">
+						Recupera tu contraseña
+					</Link>
 				</CardFooter>
 			</Card>
 		</Shell>

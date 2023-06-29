@@ -2,33 +2,34 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { isClerkAPIResponseError, useSignUp } from '@clerk/nextjs';
+import { isClerkAPIResponseError, useSignIn } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useToast } from '@/hooks/use-toast';
 import type { z } from 'zod';
 
-import { authSchema } from '@/lib/auth';
+import { resetPasswordSchema } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Icons } from '@/components/icons';
 import { PasswordInput } from '@/components/password-input';
 
-type Inputs = z.infer<typeof authSchema>;
+type Inputs = z.infer<typeof resetPasswordSchema>;
 
-export function SignUpForm() {
+export function ResetPasswordStep2Form() {
 	const { toast } = useToast();
 	const router = useRouter();
-	const { isLoaded, signUp } = useSignUp();
+	const { isLoaded, signIn, setActive } = useSignIn();
 	const [isPending, startTransition] = React.useTransition();
 
 	// react-hook-form
 	const form = useForm<Inputs>({
-		resolver: zodResolver(authSchema),
+		resolver: zodResolver(resetPasswordSchema),
 		defaultValues: {
-			email: '',
 			password: '',
+			confirmPassword: '',
+			code: '',
 		},
 	});
 
@@ -37,21 +38,25 @@ export function SignUpForm() {
 
 		startTransition(async () => {
 			try {
-				await signUp.create({
-					emailAddress: data.email,
+				const attemptFirstFactor = await signIn.attemptFirstFactor({
+					strategy: 'reset_password_email_code',
+					code: data.code,
 					password: data.password,
 				});
 
-				// Send email verification code
-				await signUp.prepareEmailAddressVerification({
-					strategy: 'email_code',
-				});
-
-				router.push('/registro/verificar-email');
-				toast({
-					title: 'Revisa tu correo',
-					description: 'Te enviamos un código de verificación por correo electrónico.',
-				});
+				if (attemptFirstFactor.status === 'needs_second_factor') {
+					// TODO: implement 2FA (requires clerk pro plan)
+				} else if (attemptFirstFactor.status === 'complete') {
+					await setActive({
+						session: attemptFirstFactor.createdSessionId,
+					});
+					router.push(`${window.location.origin}/`);
+					toast({
+						description: 'Contraseña modificada correctamente.',
+					});
+				} else {
+					console.error(attemptFirstFactor);
+				}
 			} catch (error) {
 				const unknownError = 'Something went wrong, please try again.';
 
@@ -71,12 +76,12 @@ export function SignUpForm() {
 			<form className="grid gap-4" onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}>
 				<FormField
 					control={form.control}
-					name="email"
+					name="password"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Correo</FormLabel>
+							<FormLabel>Password</FormLabel>
 							<FormControl>
-								<Input placeholder="correo@gmail.com" {...field} />
+								<PasswordInput placeholder="*********" {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -84,12 +89,32 @@ export function SignUpForm() {
 				/>
 				<FormField
 					control={form.control}
-					name="password"
+					name="confirmPassword"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Contraseña</FormLabel>
+							<FormLabel>Confirm Password</FormLabel>
 							<FormControl>
-								<PasswordInput placeholder="**********" {...field} />
+								<PasswordInput placeholder="*********" {...field} />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="code"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Code</FormLabel>
+							<FormControl>
+								<Input
+									placeholder="169420"
+									{...field}
+									onChange={(e) => {
+										e.target.value = e.target.value.trim();
+										field.onChange(e);
+									}}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -97,8 +122,8 @@ export function SignUpForm() {
 				/>
 				<Button disabled={isPending}>
 					{isPending && <Icons.spinner className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />}
-					Continuar
-					<span className="sr-only">Continúa para la página de verificación de correo</span>
+					Reset password
+					<span className="sr-only">Reset password</span>
 				</Button>
 			</form>
 		</Form>

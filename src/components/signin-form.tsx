@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { isClerkAPIResponseError, useSignUp } from '@clerk/nextjs';
+import { isClerkAPIResponseError, useSignIn } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useToast } from '@/hooks/use-toast';
@@ -17,10 +17,10 @@ import { PasswordInput } from '@/components/password-input';
 
 type Inputs = z.infer<typeof authSchema>;
 
-export function SignUpForm() {
+export function SignInForm() {
 	const { toast } = useToast();
 	const router = useRouter();
-	const { isLoaded, signUp } = useSignUp();
+	const { isLoaded, signIn, setActive } = useSignIn();
 	const [isPending, startTransition] = React.useTransition();
 
 	// react-hook-form
@@ -37,21 +37,19 @@ export function SignUpForm() {
 
 		startTransition(async () => {
 			try {
-				await signUp.create({
-					emailAddress: data.email,
+				const result = await signIn.create({
+					identifier: data.email,
 					password: data.password,
 				});
 
-				// Send email verification code
-				await signUp.prepareEmailAddressVerification({
-					strategy: 'email_code',
-				});
+				if (result.status === 'complete') {
+					await setActive({ session: result.createdSessionId });
 
-				router.push('/registro/verificar-email');
-				toast({
-					title: 'Revisa tu correo',
-					description: 'Te enviamos un código de verificación por correo electrónico.',
-				});
+					router.push(`${window.location.origin}/`);
+				} else {
+					/*Investigate why the login hasn't completed */
+					console.log(result);
+				}
 			} catch (error) {
 				const unknownError = 'Something went wrong, please try again.';
 
@@ -97,8 +95,8 @@ export function SignUpForm() {
 				/>
 				<Button disabled={isPending}>
 					{isPending && <Icons.spinner className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />}
-					Continuar
-					<span className="sr-only">Continúa para la página de verificación de correo</span>
+					Iniciar sesión
+					<span className="sr-only">Iniciar sesión</span>
 				</Button>
 			</form>
 		</Form>

@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	eactStrictMode: true,
+	reactStrictMode: true,
 	images: {
-		domains: ['uploadthing.com', 'source.unsplash.com'],
+		domains: ['uploadthing.com', 'source.unsplash.com', 'images.unsplash.com'],
 	},
 };
 

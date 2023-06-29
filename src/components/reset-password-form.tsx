@@ -2,33 +2,31 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { isClerkAPIResponseError, useSignUp } from '@clerk/nextjs';
+import { isClerkAPIResponseError, useSignIn } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useToast } from '@/hooks/use-toast';
 import type { z } from 'zod';
 
-import { authSchema } from '@/lib/auth';
+import { checkEmailSchema } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Icons } from '@/components/icons';
-import { PasswordInput } from '@/components/password-input';
 
-type Inputs = z.infer<typeof authSchema>;
+type Inputs = z.infer<typeof checkEmailSchema>;
 
-export function SignUpForm() {
+export function ResetPasswordForm() {
 	const { toast } = useToast();
 	const router = useRouter();
-	const { isLoaded, signUp } = useSignUp();
+	const { isLoaded, signIn } = useSignIn();
 	const [isPending, startTransition] = React.useTransition();
 
 	// react-hook-form
 	const form = useForm<Inputs>({
-		resolver: zodResolver(authSchema),
+		resolver: zodResolver(checkEmailSchema),
 		defaultValues: {
 			email: '',
-			password: '',
 		},
 	});
 
@@ -37,21 +35,18 @@ export function SignUpForm() {
 
 		startTransition(async () => {
 			try {
-				await signUp.create({
-					emailAddress: data.email,
-					password: data.password,
+				const firstFactor = await signIn.create({
+					strategy: 'reset_password_email_code',
+					identifier: data.email,
 				});
 
-				// Send email verification code
-				await signUp.prepareEmailAddressVerification({
-					strategy: 'email_code',
-				});
-
-				router.push('/registro/verificar-email');
-				toast({
-					title: 'Revisa tu correo',
-					description: 'Te enviamos un código de verificación por correo electrónico.',
-				});
+				if (firstFactor.status === 'needs_first_factor') {
+					router.push('/iniciar-sesion/recuperar-contrasena/paso2');
+					toast({
+						title: 'Verifica tu correo',
+						description: 'Te enviamos un código de verificación.',
+					});
+				}
 			} catch (error) {
 				const unknownError = 'Something went wrong, please try again.';
 
@@ -74,22 +69,9 @@ export function SignUpForm() {
 					name="email"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Correo</FormLabel>
+							<FormLabel>Email</FormLabel>
 							<FormControl>
-								<Input placeholder="correo@gmail.com" {...field} />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="password"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Contraseña</FormLabel>
-							<FormControl>
-								<PasswordInput placeholder="**********" {...field} />
+								<Input placeholder="rodneymullen180@gmail.com" {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -97,8 +79,8 @@ export function SignUpForm() {
 				/>
 				<Button disabled={isPending}>
 					{isPending && <Icons.spinner className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />}
-					Continuar
-					<span className="sr-only">Continúa para la página de verificación de correo</span>
+					Continue
+					<span className="sr-only">Continue to reset password verification</span>
 				</Button>
 			</form>
 		</Form>

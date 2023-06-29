@@ -8,27 +8,25 @@ import { useForm } from 'react-hook-form';
 import { useToast } from '@/hooks/use-toast';
 import type { z } from 'zod';
 
-import { authSchema } from '@/lib/auth';
+import { verfifyEmailSchema } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Icons } from '@/components/icons';
-import { PasswordInput } from '@/components/password-input';
 
-type Inputs = z.infer<typeof authSchema>;
+type Inputs = z.infer<typeof verfifyEmailSchema>;
 
-export function SignUpForm() {
+export function VerifyEmailForm() {
 	const { toast } = useToast();
 	const router = useRouter();
-	const { isLoaded, signUp } = useSignUp();
+	const { isLoaded, signUp, setActive } = useSignUp();
 	const [isPending, startTransition] = React.useTransition();
 
 	// react-hook-form
 	const form = useForm<Inputs>({
-		resolver: zodResolver(authSchema),
+		resolver: zodResolver(verfifyEmailSchema),
 		defaultValues: {
-			email: '',
-			password: '',
+			code: '',
 		},
 	});
 
@@ -37,21 +35,19 @@ export function SignUpForm() {
 
 		startTransition(async () => {
 			try {
-				await signUp.create({
-					emailAddress: data.email,
-					password: data.password,
+				const completeSignUp = await signUp.attemptEmailAddressVerification({
+					code: data.code,
 				});
+				if (completeSignUp.status !== 'complete') {
+					/*  investigate the response, to see if there was an error
+             or if the user needs to complete more steps.*/
+					console.log(JSON.stringify(completeSignUp, null, 2));
+				}
+				if (completeSignUp.status === 'complete') {
+					await setActive({ session: completeSignUp.createdSessionId });
 
-				// Send email verification code
-				await signUp.prepareEmailAddressVerification({
-					strategy: 'email_code',
-				});
-
-				router.push('/registro/verificar-email');
-				toast({
-					title: 'Revisa tu correo',
-					description: 'Te enviamos un código de verificación por correo electrónico.',
-				});
+					router.push(`${window.location.origin}/`);
+				}
 			} catch (error) {
 				const unknownError = 'Something went wrong, please try again.';
 
@@ -71,25 +67,19 @@ export function SignUpForm() {
 			<form className="grid gap-4" onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}>
 				<FormField
 					control={form.control}
-					name="email"
+					name="code"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Correo</FormLabel>
+							<FormLabel>Verification Code</FormLabel>
 							<FormControl>
-								<Input placeholder="correo@gmail.com" {...field} />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="password"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Contraseña</FormLabel>
-							<FormControl>
-								<PasswordInput placeholder="**********" {...field} />
+								<Input
+									placeholder="169420"
+									{...field}
+									onChange={(e) => {
+										e.target.value = e.target.value.trim();
+										field.onChange(e);
+									}}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -97,8 +87,8 @@ export function SignUpForm() {
 				/>
 				<Button disabled={isPending}>
 					{isPending && <Icons.spinner className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />}
-					Continuar
-					<span className="sr-only">Continúa para la página de verificación de correo</span>
+					Create account
+					<span className="sr-only">Create account</span>
 				</Button>
 			</form>
 		</Form>
