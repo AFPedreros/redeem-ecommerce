@@ -14,8 +14,8 @@ export default function ResetPasswordPage() {
 		<Shell layout="auth">
 			<Card>
 				<CardHeader className="space-y-1">
-					<CardTitle className="text-2xl">Reset password</CardTitle>
-					<CardDescription>Enter your email address and we will send you a verification code</CardDescription>
+					<CardTitle className="text-2xl">Cambiar contraseña</CardTitle>
+					<CardDescription>Escribe la nueva contraseña</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4">
 					<ResetPasswordForm />

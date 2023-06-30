@@ -2,16 +2,16 @@ import * as z from 'zod';
 
 export const authSchema = z.object({
 	email: z.string().email({
-		message: 'Please enter a valid email address',
+		message: 'Por favor ingresa un correo válido',
 	}),
 	password: z
 		.string()
 		.min(8, {
-			message: 'Password must be at least 8 characters long',
+			message: 'La contraseña debe tener mínimo 8 caracteres',
 		})
 		.max(100)
 		.regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/, {
-			message: 'Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character',
+			message: 'La contraseña debe contener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial',
 		}),
 });
 
@@ -19,7 +19,7 @@ export const verfifyEmailSchema = z.object({
 	code: z
 		.string()
 		.min(6, {
-			message: 'Verification code must be 6 characters long',
+			message: 'El código de verificación debe tener 6 caracteres',
 		})
 		.max(6),
 });

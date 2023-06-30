@@ -79,7 +79,7 @@ export function ResetPasswordStep2Form() {
 					name="password"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Password</FormLabel>
+							<FormLabel>Contraseña</FormLabel>
 							<FormControl>
 								<PasswordInput placeholder="*********" {...field} />
 							</FormControl>
@@ -92,7 +92,7 @@ export function ResetPasswordStep2Form() {
 					name="confirmPassword"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Confirm Password</FormLabel>
+							<FormLabel>Confirmar Contraseña</FormLabel>
 							<FormControl>
 								<PasswordInput placeholder="*********" {...field} />
 							</FormControl>
@@ -105,7 +105,7 @@ export function ResetPasswordStep2Form() {
 					name="code"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Code</FormLabel>
+							<FormLabel>Código</FormLabel>
 							<FormControl>
 								<Input
 									placeholder="169420"
@@ -122,8 +122,8 @@ export function ResetPasswordStep2Form() {
 				/>
 				<Button disabled={isPending}>
 					{isPending && <Icons.spinner className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />}
-					Reset password
-					<span className="sr-only">Reset password</span>
+					Cambiar contraseña
+					<span className="sr-only">Cambiar contraseña</span>
 				</Button>
 			</form>
 		</Form>

@@ -69,9 +69,9 @@ export function ResetPasswordForm() {
 					name="email"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Email</FormLabel>
+							<FormLabel>Correo</FormLabel>
 							<FormControl>
-								<Input placeholder="rodneymullen180@gmail.com" {...field} />
+								<Input placeholder="correo@gmail.com" {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -79,8 +79,8 @@ export function ResetPasswordForm() {
 				/>
 				<Button disabled={isPending}>
 					{isPending && <Icons.spinner className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />}
-					Continue
-					<span className="sr-only">Continue to reset password verification</span>
+					Contunuar
+					<span className="sr-only">Continuar para cambiar la contraseña</span>
 				</Button>
 			</form>
 		</Form>
