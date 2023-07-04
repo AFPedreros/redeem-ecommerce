@@ -16,18 +16,23 @@ export default authMiddleware({
 		// "/email-preferences(.*)",
 	],
 	async afterAuth(auth, req) {
-		console.log(auth.userId);
+		const url = new URL(req.nextUrl.origin);
+		// If the user is trying to access the login page after logging in, redirect them to the home page
+		if (req.nextUrl.pathname === '/iniciar-sesion' || req.nextUrl.pathname === '/registro') {
+			url.pathname = '/';
+			return NextResponse.redirect(url);
+		}
+
+		// console.log(auth);
 		if (auth.isPublicRoute) {
 			//  For public routes, we don't need to do anything
 			return NextResponse.next();
 		}
 
-		const url = new URL(req.nextUrl.origin);
-
 		if (!auth.userId) {
 			//  If user tries to access a private route without being authenticated,
 			//  redirect them to the sign in page
-			url.pathname = '/iniciar-sesion';
+			url.pathname = '/';
 			return NextResponse.redirect(url);
 		}
 
@@ -51,5 +56,5 @@ export default authMiddleware({
 });
 
 export const config = {
-	matcher: ['/((?!.*\\..*|_next).*)'],
+	matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };

@@ -6,13 +6,17 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { TailwindIndicator } from '@/components/tailwind-indicator';
 import { Toaster } from '@/components/ui/toaster';
 import { siteConfig } from '@/config/site';
+import { currentUser } from '@clerk/nextjs';
+import { SiteHeader } from '@/components/site-header';
+import { useRouter } from 'next/router';
 
 export const metadata = {
 	title: siteConfig.name,
 	description: siteConfig.description,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+	const user = await currentUser();
 	return (
 		<>
 			<ClerkProvider>
@@ -20,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					<head />
 					<body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable, fontMono.variable)}>
 						<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-							{children}
+							<main className="flex-1">{children}</main>
 							<TailwindIndicator />
 						</ThemeProvider>
 						<Toaster />

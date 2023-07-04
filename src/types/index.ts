@@ -1,5 +1,6 @@
 // import { type Product } from "@/db/schema"
 // import { type FileWithPath } from "react-dropzone"
+import firebase from 'firebase/compat/app';
 
 import { type Icons } from '@/components/icons';
 
@@ -52,25 +53,37 @@ export interface CheckoutItem extends CartItem {
 	price: number;
 }
 
-// export interface CartLineItem
-//   extends Pick<
-//     Product,
-//     | "id"
-//     | "name"
-//     | "images"
-//     | "category"
-//     | "subcategory"
-//     | "price"
-//     | "inventory"
-//     | "storeId"
-//   > {
-//   quantity?: number
-//   storeName: string | null
-// }
-
 export type SubscriptionPlan = {
 	name: string;
 	description: string;
 	stripePriceId: string;
 	monthlyPrice?: number | null;
 };
+
+export interface Product {
+	id: string;
+	name: string;
+	description: string;
+	images: StoredFile[] | null;
+	category: string;
+	subcategory: string | null;
+	price: number;
+	inventory: number;
+	rating: number;
+	tags: string[] | null;
+	storeId: string;
+	createdAt: firebase.firestore.Timestamp;
+}
+
+export interface CartLineItem {
+	id: string;
+	name: string;
+	images: StoredFile[] | null;
+	category: string;
+	subcategory: string | null;
+	price: number;
+	inventory: number;
+	storeId: string;
+	quantity?: number;
+	storeName: string | null;
+}

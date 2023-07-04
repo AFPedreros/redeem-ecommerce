@@ -7,6 +7,7 @@ import { Icons } from '@/components/icons';
 
 interface AuthLayoutProps {
 	children: React.ReactNode;
+	showHeader: boolean;
 }
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
@@ -15,7 +16,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
 			<AspectRatio ratio={16 / 9}>
 				<Image
 					src="https://images.unsplash.com/photo-1595991209266-5ff5a3a2f008?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
-					alt="A skateboarder doing a high drop"
+					alt="Una tienda de ropa"
 					priority
 					fill
 					className="absolute inset-0 object-cover"
