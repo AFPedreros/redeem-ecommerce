@@ -21,6 +21,7 @@ import { Icons } from '@/components/icons';
 import { MainNav } from '@/components/main-nav';
 import { MobileNav } from '@/components/mobile-nav';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 
 interface SiteHeaderProps {
 	user: User | null;
@@ -37,8 +38,12 @@ export function SiteHeader({ user }: SiteHeaderProps) {
 				<MobileNav mainNavItems={siteConfig.mainNav} sidebarNavItems={dashboardConfig.sidebarNav} />
 				<div className="flex items-center justify-end flex-1 space-x-4">
 					<nav className="flex items-center space-x-2">
-						<Combobox />
-						<CartSheet />
+						{/* <Combobox /> // El futuro buscador de productos */}
+
+						<div className={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'flex items-center')}>
+							<Icons.circleDollarSign className="w-4 h-4 mr-1" aria-hidden="true" />
+							<p className="text-sm">86</p>
+						</div>
 						{user ? (
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
@@ -58,46 +63,53 @@ export function SiteHeader({ user }: SiteHeaderProps) {
 											<p className="text-xs leading-none text-muted-foreground">{email}</p>
 										</div>
 									</DropdownMenuLabel>
+
 									<DropdownMenuSeparator />
+
 									<DropdownMenuGroup>
 										<DropdownMenuItem asChild>
-											<Link href="/dashboard/account">
+											<Link href="/">
 												<Icons.user className="w-4 h-4 mr-2" aria-hidden="true" />
-												Cuenta
-												<DropdownMenuShortcut>⇧⌘A</DropdownMenuShortcut>
+												Mi perfil
 											</Link>
 										</DropdownMenuItem>
-										<DropdownMenuItem asChild disabled>
-											<Link href="/dashboard/settings">
-												<Icons.settings className="w-4 h-4 mr-2" aria-hidden="true" />
-												Ajustes
-												<DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+										<DropdownMenuItem asChild>
+											<Link href="/">
+												<Icons.fileText className="w-4 h-4 mr-2" aria-hidden="true" />
+												Mis facturas
+											</Link>
+										</DropdownMenuItem>
+										<DropdownMenuItem asChild>
+											<Link href="/">
+												<Icons.filePlus className="w-4 h-4 mr-2" aria-hidden="true" />
+												Sube tu factura
 											</Link>
 										</DropdownMenuItem>
 									</DropdownMenuGroup>
+
 									<DropdownMenuSeparator />
 
 									<DropdownMenuItem asChild>
 										<Link href="/cerrar-sesion">
 											<Icons.logout className="w-4 h-4 mr-2" aria-hidden="true" />
 											Cerrar sesión
-											<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
 										</Link>
 									</DropdownMenuItem>
 								</DropdownMenuContent>
 							</DropdownMenu>
 						) : (
-							<Link href="/signin">
+							<Link href="/iniciar-sesion">
 								<div
 									className={buttonVariants({
 										size: 'sm',
 									})}
 								>
-									Sign In
-									<span className="sr-only">Sign In</span>
+									Iniciar sesión
+									<span className="sr-only">Iniciar sesión</span>
 								</div>
 							</Link>
 						)}
+						<CartSheet />
 					</nav>
 				</div>
 			</div>

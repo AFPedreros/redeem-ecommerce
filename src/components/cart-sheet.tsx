@@ -20,13 +20,13 @@ export async function CartSheet() {
 	return (
 		<Sheet>
 			<SheetTrigger asChild>
-				<Button aria-label="Cart" variant="outline" size="icon" className="relative">
+				<Button aria-label="Cart" variant="ghost" size="icon" className="relative">
 					{itemCount > 0 && (
 						<Badge variant="secondary" className="absolute w-6 h-6 p-2 rounded-full -right-2 -top-2">
 							{itemCount}
 						</Badge>
 					)}
-					<Icons.cart className="w-4 h-4" aria-hidden="true" />
+					<Icons.store className="w-5 h-5" aria-hidden="true" />
 				</Button>
 			</SheetTrigger>
 			<SheetContent className="flex flex-col w-full pr-0 sm:max-w-lg">

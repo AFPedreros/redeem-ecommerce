@@ -52,7 +52,10 @@ import {
 	Volume2,
 	VolumeX,
 	Wallet,
+	FilePlus,
 	X,
+	FileText,
+	CircleDollarSign,
 	type Icon as LucideIcon,
 	type LucideProps,
 } from 'lucide-react';
@@ -104,6 +107,7 @@ export const Icons = {
 	message: MessageSquare,
 	billing: CreditCard,
 	wallet: Wallet,
+	filePlus: FilePlus,
 	dollarSign: DollarSign,
 	cart: ShoppingCart,
 	product: Package,
@@ -114,6 +118,8 @@ export const Icons = {
 	clothing: Shirt,
 	shoes: Footprints,
 	accessories: HardHat,
+	fileText: FileText,
+	circleDollarSign: CircleDollarSign,
 	logo: (props: LucideProps) => (
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
 			<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z" />

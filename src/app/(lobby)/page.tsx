@@ -1,26 +1,30 @@
 'use client';
-import { Icons } from '@/components/icons';
-import { ThemeToggle } from '@/components/theme-toggle';
-import { Button } from '@/components/ui/button';
+
+import { Button, buttonVariants } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import HeroSlider from '@/components/hero-slider';
 
 export default function Home() {
 	const { toast } = useToast();
 	return (
-		<section className="pt-6 pb-8 space-y-6 md:pb-12 md:pt-10 lg:py-32">
-			<div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
-				<h1 className="text-3xl font-heading sm:text-5xl md:text-6xl lg:text-7xl">Redime tus facturas por puntos.</h1>
-				<p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">Encuentra los mejores productos.</p>
-				<div className="space-x-4">
-					<Button className={cn(buttonVariants({ size: 'lg' }))}>Sube tus facturas</Button>
-					<Link href="/cerrar-sesion" target="_blank" rel="noreferrer" className={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}>
-						Más información
-					</Link>
+		<>
+			<section id="hero" className="overflow-hidden">
+				<div className="relative h-[50vh]">
+					<HeroSlider />
 				</div>
-			</div>
-		</section>
+			</section>
+
+			<section id="facturas" className="pt-6 pb-8 space-y-6 bg-muted-foreground/50 md:pb-12 md:pt-10 lg:py-32">
+				<div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+					<h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">Agrega tus facturas</h2>
+					<p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">Agrega tus facturas y espera su aprobación </p>
+				</div>
+
+				<div className="mx-auto text-center md:max-w-[58rem]">
+					<p className="leading-normal text-muted-foreground sm:text-lg sm:leading-7">Formulario para subir facturas</p>
+				</div>
+			</section>
+		</>
 	);
 }
