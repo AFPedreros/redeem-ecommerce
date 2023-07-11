@@ -13,13 +13,13 @@ type SlideProps = {
 	};
 	direction: number;
 	variants: {
-		enter: (direction: number) => { x: number; opacity: number };
+		enter: (direction: number) => { x: string; opacity: number };
 		center: { zIndex: number; x: number; opacity: number };
-		exit: (direction: number) => { zIndex: number; x: number; opacity: number };
+		exit: (direction: number) => { zIndex: number; x: string; opacity: number };
 	};
 };
 
-export default function slide({ slide, direction, variants }: SlideProps) {
+export default function Slide({ slide, direction, variants }: SlideProps) {
 	return (
 		<motion.div
 			className="absolute flex items-center justify-center w-full h-full bg-center bg-cover"
@@ -31,8 +31,8 @@ export default function slide({ slide, direction, variants }: SlideProps) {
 			animate="center"
 			exit="exit"
 			transition={{
-				x: { type: 'spring', stiffness: 300, damping: 30, duration: 1.0 },
-				opacity: { duration: 0.5 },
+				x: { type: 'spring', stiffness: 100, damping: 30, duration: 5.0 },
+				opacity: { duration: 1 },
 			}}
 		>
 			<div className="mx-auto flex max-w-[48rem] flex-col items-center space-y-4 text-center bg-background/25 backdrop-blur w-fit p-10 rounded-md">

@@ -34,8 +34,8 @@ const slides = [
 const variants = {
 	enter: (direction: number) => {
 		return {
-			x: direction > 0 ? 1000 : -1000,
-			opacity: 0,
+			x: direction > 0 ? '100%' : '-100%',
+			opacity: 1,
 		};
 	},
 	center: {
@@ -46,16 +46,17 @@ const variants = {
 	exit: (direction: number) => {
 		return {
 			zIndex: 0,
-			x: direction < 0 ? 1000 : -1000,
-			opacity: 0.5,
+			x: direction > 0 ? '-100%' : '100%',
+			opacity: 0,
 		};
 	},
 };
 
-export default function SlidesWithContentSlider() {
+export default function HeroSlider() {
 	const [[page, direction], setPage] = useState([0, 0]);
 
 	const slideIndex = wrap(0, slides.length, page);
+	const nextSlideIndex = wrap(0, slides.length, page + 1);
 
 	const paginate = (newDirection: number) => {
 		setPage([page + newDirection, newDirection]);
@@ -64,7 +65,10 @@ export default function SlidesWithContentSlider() {
 	return (
 		<>
 			<AnimatePresence initial={false} custom={direction}>
-				<Slide slide={slides[slideIndex]} direction={direction} variants={variants} />
+				<Slide slide={slides[slideIndex]} direction={direction} variants={variants} key={page} />
+			</AnimatePresence>
+			<AnimatePresence initial={false} custom={direction}>
+				{direction !== 0 && <Slide slide={slides[nextSlideIndex]} direction={direction} variants={variants} key={page + 1} />}
 			</AnimatePresence>
 
 			<Icons.chevronRight className="absolute z-20 w-10 h-10 text-3xl text-white transform -translate-y-1/2 cursor-pointer top-1/2 right-4" aria-hidden="true" onClick={() => paginate(1)} />
