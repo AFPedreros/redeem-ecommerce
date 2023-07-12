@@ -31,7 +31,7 @@ export default function Slide({ slide, direction, variants }: SlideProps) {
 			animate="center"
 			exit="exit"
 			transition={{
-				x: { type: 'spring', stiffness: 100, damping: 30, duration: 5.0 },
+				x: { type: 'spring', stiffness: 250, damping: 30, duration: 0.5 },
 				opacity: { duration: 1 },
 			}}
 		>
