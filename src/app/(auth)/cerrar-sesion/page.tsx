@@ -1,5 +1,5 @@
 import { LogOutButtons } from '@/components/logout-buttons';
-import { Header } from '@/components/header';
+import { Header } from '@/components/layouts/header';
 import { Shell } from '@/components/shell';
 
 export default function SignOutPage() {

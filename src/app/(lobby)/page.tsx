@@ -3,7 +3,8 @@
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import HeroSlider from '@/components/hero-slider';
+import HeroSlider from '@/components/layouts/hero-slider';
+import { AddReceiptForm } from '@/components/forms/add-receipt-form';
 
 export default function Home() {
 	const { toast } = useToast();
@@ -21,8 +22,9 @@ export default function Home() {
 					<p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">Agrega tus facturas y espera su aprobación </p>
 				</div>
 
-				<div className="mx-auto text-center md:max-w-[58rem]">
-					<p className="leading-normal text-muted-foreground sm:text-lg sm:leading-7">Formulario para subir facturas</p>
+				<div className="mx-auto flex justify-center text-center md:max-w-[58rem]">
+					{/* <p className="leading-normal text-muted-foreground sm:text-lg sm:leading-7">Formulario para subir facturas</p> */}
+					<AddReceiptForm />
 				</div>
 			</section>
 		</>

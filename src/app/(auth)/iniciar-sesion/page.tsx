@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { OAuthSignIn } from '@/components/oauth-signin';
-import { SignInForm } from '@/components/signin-form';
+import { SignInForm } from '@/components/forms/signin-form';
 import { Shell } from '@/components/shell';
 import { db } from '@/lib/firebase';
 

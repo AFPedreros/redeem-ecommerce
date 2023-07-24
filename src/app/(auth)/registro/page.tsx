@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { OAuthSignIn } from '@/components/oauth-signin';
-import { SignUpForm } from '@/components/signup-form';
+import { SignUpForm } from '@/components/forms/signup-form';
 import { Shell } from '@/components/shell';
 
 export const metadata: Metadata = {

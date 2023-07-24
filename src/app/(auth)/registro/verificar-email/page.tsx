@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { VerifyEmailForm } from '@/components/verify-email-form';
+import { VerifyEmailForm } from '@/components/forms/verify-email-form';
 import { Shell } from '@/components/shell';
 
 export default function VerifyEmailPage() {

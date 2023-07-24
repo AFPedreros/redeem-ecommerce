@@ -19,7 +19,7 @@ import { CartSheet } from '@/components/cart-sheet';
 import { Combobox } from '@/components/combobox';
 import { Icons } from '@/components/icons';
 import { MainNav } from '@/components/main-nav';
-import { MobileNav } from '@/components/mobile-nav';
+import { MobileNav } from '@/components/layouts/mobile-nav';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 

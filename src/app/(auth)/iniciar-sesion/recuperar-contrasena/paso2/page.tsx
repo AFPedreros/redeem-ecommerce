@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ResetPasswordStep2Form } from '@/components/reset-password-form-step2';
+import { ResetPasswordStep2Form } from '@/components/forms/reset-password-form-step2';
 import { Shell } from '@/components/shell';
 
 export default function ResetPasswordStep2Page() {

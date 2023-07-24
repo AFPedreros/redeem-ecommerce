@@ -1,5 +1,4 @@
-// import { type Product } from "@/db/schema"
-// import { type FileWithPath } from "react-dropzone"
+import { type FileWithPath } from 'react-dropzone';
 import firebase from 'firebase/compat/app';
 
 import { type Icons } from '@/components/icons';
@@ -87,3 +86,7 @@ export interface CartLineItem {
 	quantity?: number;
 	storeName: string | null;
 }
+
+export type FileWithPreview = FileWithPath & {
+	preview: string;
+};
