@@ -34,9 +34,15 @@ const validateMall = (obj: { city: string; mall: string }): boolean => {
 const receiptSchema = z
 	.object({
 		city: z.enum(['Bogotá', 'Medellín', 'Cali']),
-		mall: z.string(),
-		value: z.string(),
-		receiptId: z.string().min(1),
+		mall: z.string().min(1, {
+			message: 'Escoge un centro comercial',
+		}),
+		value: z.string().min(1, {
+			message: 'Debe tener al menos 1 caracter',
+		}),
+		receiptId: z.string().min(5, {
+			message: 'Debe tener al menos 5 caracteres',
+		}),
 		images: z
 			.unknown()
 			.refine((val) => {
@@ -49,6 +55,7 @@ const receiptSchema = z
 			.default(null),
 	})
 	.refine((obj) => validateMall(obj), { message: 'Mall is not valid for the selected city' });
+
 const cityMalls = {
 	Cali: ['Chipichape', 'Unicentro Cali'],
 	Bogotá: ['Centro Comercial Andino', 'Centro Comercial Gran Estación'],
