@@ -106,12 +106,37 @@ export function FileDialog<TFieldValues extends FieldValues>({
 
 	return (
 		<AlertDialog>
-			<AlertDialogTrigger asChild>
-				<Button variant="outline" disabled={disabled}>
-					Subir foto
-					<span className="sr-only">Subir foto</span>
-				</Button>
-			</AlertDialogTrigger>
+			{files?.length ? (
+				<div className="relative flex items-center justify-between gap-2.5">
+					<div className="grid gap-5">
+						{files?.map((file, i) => (
+							<FileCard key={i} i={i} name={name} setValue={setValue} files={files} setFiles={setFiles} file={file} />
+						))}
+					</div>
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						className="p-0 h-7 w-7"
+						onClick={() => {
+							setFiles(null);
+							setValue(name, null as PathValue<TFieldValues, Path<TFieldValues>>, {
+								shouldValidate: true,
+							});
+						}}
+					>
+						<Icons.trash className="w-4 h-4 " aria-hidden="true" />
+						<span className="sr-only">Eliminar archivo</span>
+					</Button>
+				</div>
+			) : (
+				<AlertDialogTrigger asChild>
+					<Button variant="outline" disabled={disabled}>
+						Subir foto
+						<span className="sr-only">Subir foto</span>
+					</Button>
+				</AlertDialogTrigger>
+			)}
 			<AlertDialogContent className="sm:max-w-[480px]">
 				<AlertDialogHeader>
 					<AlertDialogTitle className="text-muted-foreground">Sube la foto de tu factura</AlertDialogTitle>
@@ -147,7 +172,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
 							<div
 								{...getRootProps()}
 								className={cn(
-									'group relative mt-8 grid h-48 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25',
+									'group relative grid h-48 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25',
 									'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
 									isDragActive && 'border-muted-foreground/50',
 									disabled && 'pointer-events-none opacity-60',
@@ -205,7 +230,7 @@ interface FileCardProps<TFieldValues extends FieldValues> {
 
 function FileCard<TFieldValues extends FieldValues>({ i, file, name, setValue, files }: FileCardProps<TFieldValues>) {
 	return (
-		<div className="relative mt-8 flex items-center justify-between gap-2.5">
+		<div className="relative flex items-center justify-between gap-2.5">
 			<div className="flex items-center gap-2">
 				<Image src={file.preview} alt={file.name} className="w-10 h-10 rounded-md shrink-0" width={40} height={40} loading="lazy" />
 				<div className="flex flex-col">
