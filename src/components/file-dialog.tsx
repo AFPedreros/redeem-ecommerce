@@ -140,18 +140,14 @@ export function FileDialog<TFieldValues extends FieldValues>({
 			<AlertDialogContent className="sm:max-w-[480px]">
 				<AlertDialogHeader>
 					<AlertDialogTitle className="text-muted-foreground">Sube la foto de tu factura</AlertDialogTitle>
-					<AlertDialogDescription>
-						{/* <p className="text-sm font-medium text-center text-muted-foreground">
-					You can upload up to {maxFiles} {maxFiles === 1 ? 'file' : 'files'}
-				</p> */}
-						{files?.length ? (
+
+					{files?.length ? (
+						<div>
 							<div className="grid gap-5">
 								{files?.map((file, i) => (
 									<FileCard key={i} i={i} name={name} setValue={setValue} files={files} setFiles={setFiles} file={file} />
 								))}
 							</div>
-						) : null}
-						{files?.length ? (
 							<Button
 								type="button"
 								variant="outline"
@@ -168,38 +164,38 @@ export function FileDialog<TFieldValues extends FieldValues>({
 								Quitar
 								<span className="sr-only">Quitar</span>
 							</Button>
-						) : (
-							<div
-								{...getRootProps()}
-								className={cn(
-									'group relative grid h-48 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25',
-									'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-									isDragActive && 'border-muted-foreground/50',
-									disabled && 'pointer-events-none opacity-60',
-									className
-								)}
-								{...props}
-							>
-								<input {...getInputProps()} />
-								{isUploading ? (
-									<div className="grid w-full gap-1 group place-items-center sm:px-10">
-										<Icons.upload className="h-9 w-9 animate-pulse text-muted-foreground" aria-hidden="true" />
-									</div>
-								) : isDragActive ? (
-									<div className="grid gap-2 place-items-center text-muted-foreground sm:px-5">
-										<Icons.upload className={cn('h-8 w-8', isDragActive && 'animate-bounce')} aria-hidden="true" />
-										<p className="text-base font-medium">Drop the file here</p>
-									</div>
-								) : (
-									<div className="grid gap-1 place-items-center sm:px-5">
-										<Icons.upload className="w-8 h-8 text-muted-foreground" aria-hidden="true" />
-										<p className="mt-2 text-base font-medium text-muted-foreground">Arrastra el archivo aquí, o da click para seleccionar el archvi</p>
-										<p className="text-sm text-slate-500">Por favir sube un archivo con un peso menor a {formatBytes(maxSize)}</p>
-									</div>
-								)}
-							</div>
-						)}
-					</AlertDialogDescription>
+						</div>
+					) : (
+						<div
+							{...getRootProps()}
+							className={cn(
+								'group relative grid h-48 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25',
+								'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+								isDragActive && 'border-muted-foreground/50',
+								disabled && 'pointer-events-none opacity-60',
+								className
+							)}
+							{...props}
+						>
+							<input {...getInputProps()} />
+							{isUploading ? (
+								<div className="grid w-full gap-1 group place-items-center sm:px-10">
+									<Icons.upload className="h-9 w-9 animate-pulse text-muted-foreground" aria-hidden="true" />
+								</div>
+							) : isDragActive ? (
+								<div className="grid gap-2 place-items-center text-muted-foreground sm:px-5">
+									<Icons.upload className={cn('h-8 w-8', isDragActive && 'animate-bounce')} aria-hidden="true" />
+									<p className="text-base font-medium">Drop the file here</p>
+								</div>
+							) : (
+								<div className="grid gap-1 place-items-center sm:px-5">
+									<Icons.upload className="w-8 h-8 text-muted-foreground" aria-hidden="true" />
+									<p className="mt-2 text-base font-medium text-muted-foreground">Arrastra el archivo aquí, o da click para seleccionar el archvi</p>
+									<p className="text-sm text-slate-500">Por favir sube un archivo con un peso menor a {formatBytes(maxSize)}</p>
+								</div>
+							)}
+						</div>
+					)}
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel

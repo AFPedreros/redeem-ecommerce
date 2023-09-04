@@ -17,6 +17,11 @@ import { Icons } from '@/components/icons';
 import type { OurFileRouter } from '@/app/api/uploadthing/core';
 
 import { useState, useEffect, useTransition } from 'react';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { currentUser } from '@clerk/nextjs';
+import { db } from '@/lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { User } from '@clerk/nextjs/dist/types/server';
 
 const validateMall = (obj: { city: string; mall: string }): boolean => {
 	switch (obj.city) {
@@ -29,6 +34,19 @@ const validateMall = (obj: { city: string; mall: string }): boolean => {
 		default:
 			return false;
 	}
+};
+
+type ImageData = {
+	path: string;
+	preview: string;
+};
+
+type DataObject = {
+	city: string;
+	mall: string;
+	value: string;
+	receiptId: string;
+	images: ImageData[];
 };
 
 const receiptSchema = z
@@ -72,6 +90,7 @@ export function AddReceiptForm() {
 	const [isPending, startTransition] = useTransition();
 	const [city, setCity] = useState<'Bogotá' | 'Medellín' | 'Cali' | null>('Cali');
 	const [malls, setMalls] = useState<string[]>([]);
+	const [user, setUser] = useState<User | null>(null);
 
 	useEffect(() => {
 		if (city) {
@@ -80,6 +99,15 @@ export function AddReceiptForm() {
 			setMalls([]);
 		}
 	}, [city]);
+
+	useEffect(() => {
+		async function getUser() {
+			const nUser = await currentUser();
+			setUser(nUser);
+			console.log(user);
+		}
+		getUser();
+	}, []);
 
 	// uploadthing
 	const { isUploading, startUpload } = useUploadThing('productImage');
@@ -115,6 +143,35 @@ export function AddReceiptForm() {
 				// 	storeId,
 				// 	images,
 				// });
+
+				if (!user || !user.emailAddresses[0]) {
+					toast({
+						description: 'Error al obtener el correo electrónico del usuario',
+					});
+					return;
+				}
+				const email = user?.emailAddresses[0].emailAddress;
+				const id = data.mall + '-' + data.receiptId;
+
+				const storage = getStorage();
+				const storageRef = ref(storage, `facturas/${email}/${id}`);
+
+				// const response = await fetch((data as DataObject).images[0].preview);
+				// const imageBlob = await response.blob();
+
+				// const snapshot = await uploadBytes(storageRef, imageBlob);
+				// const url = await getDownloadURL(storageRef);
+
+				await setDoc(doc(db, 'users', email, 'facturas', id), {
+					id: id,
+					// fechaRegistro: snapshot.metadata.timeCreated,
+					valorTotal: data.value,
+					numeroFactura: data.receiptId,
+					ciudad: data.city,
+					centroComercial: data.mall,
+					estado: 'Por revisión',
+					// url: url,
+				});
 
 				toast({
 					description: '¡Tu factura se subió exitosamente!',
@@ -210,7 +267,7 @@ export function AddReceiptForm() {
 
 				<FormItem className="flex w-full flex-col gap-1.5">
 					<FormControl>
-						<FileDialog setValue={form.setValue} name="images" maxFiles={3} maxSize={1024 * 1024 * 4} files={files} setFiles={setFiles} isUploading={isUploading} disabled={isPending} />
+						<FileDialog setValue={form.setValue} name="images" maxFiles={1} maxSize={1024 * 1024 * 4} files={files} setFiles={setFiles} isUploading={isUploading} disabled={isPending} />
 					</FormControl>
 					<UncontrolledFormMessage message={form.formState.errors.images?.message} />
 				</FormItem>
@@ -223,106 +280,4 @@ export function AddReceiptForm() {
 			</form>
 		</Form>
 	);
-}
-{
-	/* <Form {...form}>
-			<form className="grid w-full max-w-2xl gap-5" onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}>
-				<FormItem>
-					<FormLabel>Name</FormLabel>
-					<FormControl>
-						<Input aria-invalid={!!form.formState.errors.name} placeholder="Type product name here." {...form.register('name')} />
-					</FormControl>
-					<UncontrolledFormMessage message={form.formState.errors.name?.message} />
-				</FormItem>
-				<div className="flex flex-col items-start gap-6 sm:flex-row">
-					<FormField
-						control={form.control}
-						name="category"
-						render={({ field }) => (
-							<FormItem className="w-full">
-								<FormLabel>Category</FormLabel>
-								<FormControl>
-									<Select value={field.value} onValueChange={(value: typeof field.value) => field.onChange(value)}>
-										<SelectTrigger className="capitalize">
-											<SelectValue placeholder={field.value} />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectGroup>
-												{Object.values(products.category.enumValues).map((option) => (
-													<SelectItem key={option} value={option} className="capitalize">
-														{option}
-													</SelectItem>
-												))}
-											</SelectGroup>
-										</SelectContent>
-									</Select>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="subcategory"
-						render={({ field }) => (
-							<FormItem className="w-full">
-								<FormLabel>Subcategory</FormLabel>
-								<FormControl>
-									<Select value={field.value?.toString()} onValueChange={field.onChange}>
-										<SelectTrigger>
-											<SelectValue placeholder="Select a subcategory" />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectGroup>
-												{subcategories.map((option) => (
-													<SelectItem key={option.value} value={option.value}>
-														{option.label}
-													</SelectItem>
-												))}
-											</SelectGroup>
-										</SelectContent>
-									</Select>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-				</div>
-				<div className="flex flex-col items-start gap-6 sm:flex-row">
-					<FormItem className="w-full">
-						<FormLabel>Price</FormLabel>
-						<FormControl>
-							<Input placeholder="Type product price here." {...form.register('price')} />
-						</FormControl>
-						<UncontrolledFormMessage message={form.formState.errors.price?.message} />
-					</FormItem>
-					<FormItem className="w-full">
-						<FormLabel>Inventory</FormLabel>
-						<FormControl>
-							<Input
-								type="number"
-								inputMode="numeric"
-								placeholder="Type product inventory here."
-								{...form.register('inventory', {
-									valueAsNumber: true,
-								})}
-							/>
-						</FormControl>
-						<UncontrolledFormMessage message={form.formState.errors.inventory?.message} />
-					</FormItem>
-				</div>
-				<FormItem className="flex w-full flex-col gap-1.5">
-					<FormLabel>Images</FormLabel>
-					<FormControl>
-						<FileDialog setValue={form.setValue} name="images" maxFiles={3} maxSize={1024 * 1024 * 4} files={files} setFiles={setFiles} isUploading={isUploading} disabled={isPending} />
-					</FormControl>
-					<UncontrolledFormMessage message={form.formState.errors.images?.message} />
-				</FormItem>
-				<Button className="w-fit" disabled={isPending}>
-					{isPending && <Icons.spinner className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />}
-					Add Product
-					<span className="sr-only">Add Product</span>
-				</Button>
-			</form>
-		</Form> */
 }
